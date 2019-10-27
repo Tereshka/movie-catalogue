@@ -11,8 +11,16 @@ class App extends React.Component {
     moviesWillWatch: [],
   }
 
-  toggleWatchList = (movie) => {
-    console.log(movie);
+  toggleWatchList = movie => {
+    let newMoviesWillWatch;
+    if (this.state.moviesWillWatch.find(m => m.id === movie.id)) {
+      newMoviesWillWatch = this.state.moviesWillWatch.filter(m => m.id !== movie.id);
+    } else {
+      newMoviesWillWatch = [...this.state.moviesWillWatch];
+      newMoviesWillWatch.push(movie);
+    }
+    
+    this.setState({moviesWillWatch : newMoviesWillWatch});
   }
 
   render() {
