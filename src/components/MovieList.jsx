@@ -8,7 +8,7 @@ export default function MovieList(props) {
       {
         movies.map(movie => {
           return (
-            <div key={movie.id} className="col-4 mb-4">
+            <div key={movie.id} className="col-12 mb-4 col-sm-6 col-lg-4">
               <MovieItem movie={movie} toggleWatchList={toggleWatchList} />
             </div>
           )

@@ -28,10 +28,10 @@ class App extends React.Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-9">
+          <div className="col-8">
             <MovieList movies={movies} toggleWatchList={this.toggleWatchList}/>
           </div>
-          <div className="col-3">
+          <div className="col-4">
             <MovieListWillWatch movies={moviesWillWatch}/>
           </div>
         </div>
