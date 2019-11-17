@@ -1,4 +1,5 @@
 import React from "react";
+import noPoster from '../img/no_poster.jpg';
 
 export default class MovieItem extends React.Component {
 
@@ -11,6 +12,13 @@ export default class MovieItem extends React.Component {
     this.props.toggleWatchList(this.props.movie);
   }
 
+  getPosterSrc(value) {
+    if (value) {
+      return `https://image.tmdb.org/t/p/w500${value}`;
+    }
+    return noPoster;
+  }
+
   render() {
     const { movie } = this.props;
     const { title, poster_path, overview, vote_average, id } = movie;
@@ -18,7 +26,7 @@ export default class MovieItem extends React.Component {
     const buttonClass = `btn ${isInWatchList ? "btn-primary" : "btn-secondary"}`;
     return (
       <div className="card">
-        <img className="card-img-top" src={`https://image.tmdb.org/t/p/w500${poster_path}`} alt={title} />
+        <img className="card-img-top" src={this.getPosterSrc(poster_path)} alt={title} />
         <div className="card-body">
           <h5 className="card-title">
             {title}
