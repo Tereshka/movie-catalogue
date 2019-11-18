@@ -32,8 +32,10 @@
 - кнопка "Назад" - переключает на предыдущую страницу и делает новый запрос,  но уже с page=2 (например)
 
 В файле .env использованы переменные:
-```REACT_APP_API_KEY=your_key
-REACT_APP_API_URL=https://api.themoviedb.org/3/```
+```
+REACT_APP_API_KEY=your_key
+REACT_APP_API_URL=https://api.themoviedb.org/3/
+```
 
 
 ## Путь к изображениям для компонента MovieItem
