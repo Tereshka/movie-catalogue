@@ -3,7 +3,7 @@ import React from "react";
 export default function MovieListWillWatch(props) {
   const { movies } = props;
   return (
-    <div className="row">
+    <div>
       <h4>Will watch {movies.length} movies</h4>
       <ul className="list-group">
         {

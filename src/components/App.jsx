@@ -4,12 +4,16 @@ import MovieList from './MovieList';
 import MovieListWillWatch from './MovieListWillWatch';
 import MovieTabs from './MovieTabs';
 import Pagination from './Pagination';
+import YearSelector from './YearSelector';
+import GenresSelector from './GenresSelector';
 
 class App extends React.Component {
 
   state = {
     movies: [],
     moviesWillWatch: [],
+    genres: [],
+    genresSelected: [],
     sortBy: 'popularity.desc',
     apiURL: process.env.REACT_APP_API_URL,
     apiKey: process.env.REACT_APP_API_KEY,
@@ -28,29 +32,78 @@ class App extends React.Component {
         title: 'Release date desc',
         sortBy: 'release_date.desc',
       }
-    ]
+    ],
+    currentYear: 2019,
+    yearList: [
+      2020,
+      2019,
+      2018,
+      2017,
+      2016,
+      2015,
+    ],
   }
 
   componentDidMount() {
     this.getMovies();
+    this.getGenres();
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.sortBy !== this.state.sortBy) {
       this.getMovies();
     }
+    if (prevState.currentYear !== this.state.currentYear) {
+      this.getMovies();
+    }
+    if (prevState.genresSelected !== this.state.genresSelected) {
+      this.getMovies();
+    }
   }
 
   getMovies(page = 1) {
-    const { apiURL, apiKey, sortBy } = this.state;
-    fetch(`${apiURL}discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}`)
+    const { apiURL, apiKey, sortBy, currentYear, genresSelected } = this.state;
+    let genres = "";
+    genresSelected.forEach(el => genres += el + ',');
+    fetch(`${apiURL}discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}&primary_release_year=${currentYear}&with_genres=${genres}`)
       .then(res => res.json())
       .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
+  }
+
+  getGenres() {
+    const { apiURL, apiKey } = this.state;
+    fetch(`${apiURL}genre/movie/list?api_key=${apiKey}`)
+      .then(res => res.json())
+      .then(data => this.setState({ genres: data.genres }));
+  }
+
+  clearAllFilters = () => {
+    this.setState({
+      genresSelected: [],
+      sortBy: 'popularity.desc',
+      activePage: 1,
+      currentYear: 2019,
+    });
   }
 
   onChangeSortBy = value => {
     this.setState({ sortBy: value, activePage: 1 });
   }
+
+  onChangeYear = event => {
+    this.setState({currentYear: parseInt(event.target.value), activePage: 1});
+  }
+
+  onChangeCheckbox = event => {
+    let newGenres = [...this.state.genresSelected];
+    const {checked, value} = event.target;
+    if (checked) {
+      newGenres.push(parseInt(value));
+    } else {
+      newGenres = this.state.genresSelected.filter(el => el !== parseInt(value));
+    }
+    this.setState({genresSelected: newGenres, activePage: 1});
+	};
 
   toggleWatchList = movie => {
     let newMoviesWillWatch;
@@ -70,7 +123,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList } = this.state;
+    const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList, currentYear, yearList, genres, genresSelected } = this.state;
     return (
       <div className="container">
 
@@ -94,6 +147,9 @@ class App extends React.Component {
           </div>
           <div className="col-4">
             <MovieListWillWatch movies={moviesWillWatch} />
+            <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
+            <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
+            <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>
           </div>
         </div>
       </div>
