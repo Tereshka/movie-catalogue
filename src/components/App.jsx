@@ -15,6 +15,20 @@ class App extends React.Component {
     apiKey: process.env.REACT_APP_API_KEY,
     activePage: 1,
     totalPages: 0,
+    sortList: [
+      {
+        title: 'Popularity desc',
+        sortBy: 'popularity.desc',
+      },
+      {
+        title: 'Revenue desc',
+        sortBy: 'revenue.desc',
+      },
+      {
+        title: 'Release date desc',
+        sortBy: 'release_date.desc',
+      }
+    ]
   }
 
   componentDidMount() {
@@ -28,14 +42,14 @@ class App extends React.Component {
   }
 
   getMovies(page = 1) {
-    const {apiURL, apiKey, sortBy} = this.state;
+    const { apiURL, apiKey, sortBy } = this.state;
     fetch(`${apiURL}discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}`)
       .then(res => res.json())
-      .then(data => this.setState({movies: data.results, totalPages: data.total_pages}));
+      .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
   }
 
   onChangeSortBy = value => {
-    this.setState({sortBy: value});
+    this.setState({ sortBy: value });
   }
 
   toggleWatchList = movie => {
@@ -46,40 +60,40 @@ class App extends React.Component {
       newMoviesWillWatch = [...this.state.moviesWillWatch];
       newMoviesWillWatch.push(movie);
     }
-    
-    this.setState({moviesWillWatch : newMoviesWillWatch});
+
+    this.setState({ moviesWillWatch: newMoviesWillWatch });
   }
 
   onClickPage = (page) => {
-    this.setState({ activePage: page});
+    this.setState({ activePage: page });
     this.getMovies(page);
   }
 
   render() {
-    const { movies, moviesWillWatch, sortBy, activePage, totalPages } = this.state;
+    const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList } = this.state;
     return (
       <div className="container">
 
         <div className="row mt-3">
-          <div className="col-8">        
+          <div className="col-8">
             <div className="row mb-3">
               <div className="col">
-                <MovieTabs sortBy={sortBy} onChangeSortBy={this.onChangeSortBy}/>
+                <MovieTabs sortList={sortList} sortBy={sortBy} onChangeSortBy={this.onChangeSortBy} />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                <MovieList movies={movies} toggleWatchList={this.toggleWatchList}/>
+                <MovieList movies={movies} toggleWatchList={this.toggleWatchList} />
               </div>
             </div>
             <div className="row">
               <div className="col">
-                <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage}/>
+                <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage} />
               </div>
             </div>
           </div>
           <div className="col-4">
-            <MovieListWillWatch movies={moviesWillWatch}/>
+            <MovieListWillWatch movies={moviesWillWatch} />
           </div>
         </div>
       </div>
