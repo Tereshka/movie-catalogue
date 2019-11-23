@@ -49,7 +49,7 @@ class App extends React.Component {
   }
 
   onChangeSortBy = value => {
-    this.setState({ sortBy: value });
+    this.setState({ sortBy: value, activePage: 1 });
   }
 
   toggleWatchList = movie => {
