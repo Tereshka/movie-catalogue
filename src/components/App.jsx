@@ -6,6 +6,7 @@ import MovieTabs from './MovieTabs';
 import Pagination from './Pagination';
 import YearSelector from './YearSelector';
 import GenresSelector from './GenresSelector';
+import Header from './Header';
 
 class App extends React.Component {
 
@@ -125,31 +126,33 @@ class App extends React.Component {
   render() {
     const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList, currentYear, yearList, genres, genresSelected } = this.state;
     return (
-      <div className="container">
-
-        <div className="row mt-3">
-          <div className="col-8">
-            <div className="row mb-3">
-              <div className="col">
-                <MovieTabs sortList={sortList} sortBy={sortBy} onChangeSortBy={this.onChangeSortBy} />
+      <div>
+        <Header />
+        <div className="container">
+          <div className="row mt-3">
+            <div className="col-8">
+              <div className="row mb-3">
+                <div className="col">
+                  <MovieTabs sortList={sortList} sortBy={sortBy} onChangeSortBy={this.onChangeSortBy} />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <MovieList movies={movies} toggleWatchList={this.toggleWatchList} />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage} />
+                </div>
               </div>
             </div>
-            <div className="row">
-              <div className="col">
-                <MovieList movies={movies} toggleWatchList={this.toggleWatchList} />
-              </div>
+            <div className="col-4">
+              <MovieListWillWatch movies={moviesWillWatch} />
+              <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
+              <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
+              <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>
             </div>
-            <div className="row">
-              <div className="col">
-                <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage} />
-              </div>
-            </div>
-          </div>
-          <div className="col-4">
-            <MovieListWillWatch movies={moviesWillWatch} />
-            <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
-            <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
-            <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>
           </div>
         </div>
       </div>
