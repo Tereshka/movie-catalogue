@@ -8,9 +8,16 @@ import YearSelector from './YearSelector';
 import GenresSelector from './GenresSelector';
 import Header from './Header';
 
+import {fetchApi} from '../api/api.js';
+import Cookie from 'universal-cookie';
+
+const cookies = new Cookie();
+
 class App extends React.Component {
 
   state = {
+    user: null,
+    sessionId: null,
     movies: [],
     moviesWillWatch: [],
     genres: [],
@@ -46,6 +53,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const sessionId = cookies.get("session_id");
+    if (sessionId) {
+      fetchApi(`${this.apiURL}/account?api_key=${this.apiKey}&session_id=${sessionId}`)
+        .then(user => {
+          this.updateUser(user);
+        });
+    }
+    
     this.getMovies();
     this.getGenres();
   }
@@ -62,18 +77,29 @@ class App extends React.Component {
     }
   }
 
+  updateUser = user => {
+    this.setState({user});
+  }
+  updateSessionId = sessionId => {
+    this.setState({sessionId});
+    cookies.set('session_id', sessionId, {
+      path: '/',
+      maxAge: 2592000, // 30 days
+    })
+  }
+
   getMovies(page = 1) {
     const { apiURL, apiKey, sortBy, currentYear, genresSelected } = this.state;
     let genres = "";
     genresSelected.forEach(el => genres += el + ',');
-    fetch(`${apiURL}discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}&primary_release_year=${currentYear}&with_genres=${genres}`)
+    fetch(`${apiURL}/discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}&primary_release_year=${currentYear}&with_genres=${genres}`)
       .then(res => res.json())
       .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
   }
 
   getGenres() {
     const { apiURL, apiKey } = this.state;
-    fetch(`${apiURL}genre/movie/list?api_key=${apiKey}`)
+    fetch(`${apiURL}/genre/movie/list?api_key=${apiKey}`)
       .then(res => res.json())
       .then(data => this.setState({ genres: data.genres }));
   }
@@ -124,10 +150,12 @@ class App extends React.Component {
   }
 
   render() {
-    const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList, currentYear, yearList, genres, genresSelected } = this.state;
+    const { user, movies, moviesWillWatch, sortBy, activePage, 
+      totalPages, sortList, currentYear, yearList, genres, 
+      genresSelected } = this.state;
     return (
       <div>
-        <Header />
+        <Header user={user} updateUser={this.updateUser} updateSessionId={this.updateSessionId}/>
         <div className="container">
           <div className="row mt-3">
             <div className="col-8">

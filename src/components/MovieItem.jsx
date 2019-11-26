@@ -23,7 +23,7 @@ export default class MovieItem extends React.Component {
     const { movie } = this.props;
     const { title, poster_path, overview, vote_average, id } = movie;
     const { isInWatchList } = this.state;
-    const buttonClass = `btn ${isInWatchList ? "btn-primary" : "btn-secondary"}`;
+    const buttonClass = `btn btn-block ${isInWatchList ? "btn-primary" : "btn-secondary"}`;
     return (
       <div className="card">
         <img className="card-img-top" src={this.getPosterSrc(poster_path)} alt={title} />
@@ -32,19 +32,25 @@ export default class MovieItem extends React.Component {
             {title}
             <span className="badge badge-warning">{vote_average}</span>
           </h5>
-          <button type="button mr-2 mb-2" className="btn btn-outline-dark" data-toggle="modal" data-target={`#exampleModal-${id}`}>About</button>
+          <button type="button" 
+            className="btn btn-block btn-outline-dark"
+            data-toggle="modal"
+            data-target={`#itemModal-${id}`}
+          >
+            About
+          </button>
           <button type="button"
             className={buttonClass}
             onClick={this.onClickHandle}
-          >{
-              isInWatchList ? "Remove" : "Going to watch"
-            }</button>
+          >
+            { isInWatchList ? "Remove" : "Going to watch" }
+          </button>
         </div>
-        <div id={`exampleModal-${id}`} className="modal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div id={`itemModal-${id}`} className="modal fade" tabIndex="-1" role="dialog" aria-labelledby={`#modalTitle-${id}`} aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">{title}</h5>
+                <h5 className="modal-title" id={`#modalTitle-${id}`}>{title}</h5>
                 <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
