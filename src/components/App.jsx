@@ -8,7 +8,7 @@ import YearSelector from './YearSelector';
 import GenresSelector from './GenresSelector';
 import Header from './Header';
 
-import {fetchApi} from '../api/api.js';
+import { fetchApi } from '../api/api.js';
 import Cookie from 'universal-cookie';
 
 const cookies = new Cookie();
@@ -53,9 +53,9 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const sessionId = cookies.get("session_id");
+    const sessionId = cookies.get('session_id');
     if (sessionId) {
-      fetchApi(`${this.apiURL}/account?api_key=${this.apiKey}&session_id=${sessionId}`)
+      fetchApi(`${this.state.apiURL}/account?api_key=${this.state.apiKey}&session_id=${sessionId}`)
         .then(user => {
           this.updateUser(user);
         });

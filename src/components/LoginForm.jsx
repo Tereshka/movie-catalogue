@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {fetchApi} from '../api/api.js';
+import { fetchApi } from '../api/api';
 
 export default class LoginForm extends React.Component {
 
@@ -9,6 +9,7 @@ export default class LoginForm extends React.Component {
     apiKey: process.env.REACT_APP_API_KEY,
     username: '',
     password: '',
+    repeatPassword: '',
     errors: {},
     submitting: false,
   }
@@ -26,8 +27,8 @@ export default class LoginForm extends React.Component {
     }));
   }
 
-  handleBlur = () => {
-    const errors = this.validateFields();
+  handleBlur = (event) => {
+    const errors = this.validateFields(event.target.name);
     if (Object.keys(errors).length > 0) {
       this.setState(prevState => ({
         errors: {
@@ -38,14 +39,17 @@ export default class LoginForm extends React.Component {
     }
   }
   
-  validateFields = () => {
+  validateFields = (field) => {
     const errors = {};
 
-    if (this.state.username === '') {
-      errors.username = 'Enter your username';
+    if (field === 'username' && this.state.username === '') {
+      errors.username = 'Username is required';
     }
-    if (this.state.password === '') {
-      errors.password = 'Enter your password';
+    if (field === 'password' && this.state.password === '') {
+      errors.password = 'Password is required';
+    }
+    if (field === 'repeatPassword' && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
+      errors.repeatPassword = 'Passwords should be equal';
     }
 
     return errors;
@@ -66,41 +70,61 @@ export default class LoginForm extends React.Component {
     }
   }
 
+  // Moved into separate file
+  // fetchApi = (url, options = {}) => {
+  //   return new Promise((resolve, reject) => {
+  //     fetch(url, options)
+  //       .then(response => {
+  //         if (response.status < 400) {
+  //           return response.json();
+  //         } else {
+  //           throw response;
+  //         }
+  //       })
+  //       .then(data => {
+  //         resolve(data);
+  //       })
+  //       .catch(response => {
+  //         response.json().then(error => {
+  //           reject(error);
+  //         });
+  //       });
+  //   });
+  // };
 
-
-  // Send requests in chain
-  sendPromises = () => {
-    const {apiURL, apiKey} = this.state;
-    fetchApi(`${apiURL}/authentication/token/new?api_key=${apiKey}`)
-      .then(data => 
-        fetchApi(`${apiURL}/authentication/token/validate_with_login?api_key=${apiKey}`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: this.state.username,
-            password: this.state.password,
-            request_token: data.request_token,
-          })
-        })
-      )
-      .then(data => 
-        fetchApi(`${apiURL}/authentication/session/new?api_key=${apiKey}`, {
-          method: 'POST',
-          mode: 'cors',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({
-            request_token: data.request_token,
-          })
-        })
-      )
-      .then(data => console.log(data))
-      .catch(error => console.log('error', error));
-  }
+  // // Send requests in chain
+  // sendPromises = () => {
+  //   const {apiURL, apiKey} = this.state;
+  //   this.fetchApi(`${apiURL}/authentication/token/new?api_key=${apiKey}`)
+  //     .then(data => 
+  //       this.fetchApi(`${apiURL}/authentication/token/validate_with_login?api_key=${apiKey}`, {
+  //         method: 'POST',
+  //         mode: 'cors',
+  //         headers: {
+  //           'Content-type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           username: this.state.username,
+  //           password: this.state.password,
+  //           request_token: data.request_token,
+  //         })
+  //       })
+  //     )
+  //     .then(data => 
+  //       this.fetchApi(`${apiURL}/authentication/session/new?api_key=${apiKey}`, {
+  //         method: 'POST',
+  //         mode: 'cors',
+  //         headers: {
+  //           'Content-type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           request_token: data.request_token,
+  //         })
+  //       })
+  //     )
+  //     .then(data => console.log(data))
+  //     .catch(error => console.log('error', error));
+  // }
 
   // Send requests in async style
   sendPromisesAsync = async () => {
@@ -132,12 +156,13 @@ export default class LoginForm extends React.Component {
       });
 
       const user = await fetchApi(`${apiURL}/account?api_key=${apiKey}&session_id=${session.session_id}`);
-      this.props.updateUser(user);
-      this.props.updateSessionId(session.session_id);
 
       this.setState({submitting: false});
+      this.props.updateUser(user);
+      this.props.updateSessionId(session.session_id);
     } catch (error) {
-      console.log('error', error);
+      // error.json().then(error => console.log(error));
+
       this.setState({
         submitting: false,
         errors: {
@@ -147,9 +172,8 @@ export default class LoginForm extends React.Component {
     }
   }
 
-
   render() {
-    const {username, password, errors, submitting} = this.state;
+    const {username, password, repeatPassword, errors, submitting} = this.state;
     return (
       <div>
         <h1>Log into your account</h1>
@@ -180,6 +204,20 @@ export default class LoginForm extends React.Component {
             onBlur={this.handleBlur}
           />
           {errors.password && <div className="invalid-feedback">{errors.password}</div> }
+        </div>
+        <div className="form-group">
+          <label htmlFor="repeatPassword">Repeat Password</label>
+          <input
+            id="repeatPassword"
+            type="password"
+            className="form-control"
+            placeholder="repeatPassword"
+            name="repeatPassword"
+            value={repeatPassword}
+            onChange={this.onChangeInput}
+            onBlur={this.handleBlur}
+          />
+          {errors.repeatPassword && <div className="invalid-feedback">{errors.repeatPassword}</div> }
         </div>
         <button
           className="btn btn-block btn-primary my-2 my-sm-0"

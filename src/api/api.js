@@ -11,11 +11,11 @@ export const fetchApi = (url, options = {}) => {
       .then(data => {
         resolve(data);
       })
-      .catch(errors => {
-        console.log(errors);
-        // response.json().then(error => {
-        //   reject(error);
-        // });
+      .catch(response => {
+        // reject(response);
+        response.json().then(error => {
+          reject(error);
+        });
       });
   });
 };
