@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { fetchApi } from '../api/api';
+import { fetchApi } from '../../api/api';
 
 export default class LoginForm extends React.Component {
 
@@ -42,13 +42,14 @@ export default class LoginForm extends React.Component {
   validateFields = (field) => {
     const errors = {};
 
-    if (field === 'username' && this.state.username === '') {
+    if ((field === 'username' || field === undefined) && this.state.username === '') {
       errors.username = 'Username is required';
     }
-    if (field === 'password' && this.state.password === '') {
+    if ((field === 'password' || field === undefined) && this.state.password === '') {
       errors.password = 'Password is required';
     }
-    if (field === 'repeatPassword' && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
+    if ((field === 'repeatPassword' || field === undefined)
+      && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
       errors.repeatPassword = 'Passwords should be equal';
     }
 
@@ -57,7 +58,7 @@ export default class LoginForm extends React.Component {
 
   onLogin = event => {
     event.preventDefault();
-    const errors = this.validateFields();
+    let errors = this.validateFields();
     if (Object.keys(errors).length > 0) {
       this.setState(prevState => ({
         errors: {
@@ -182,7 +183,7 @@ export default class LoginForm extends React.Component {
           <input
             id="username"
             type="text"
-            className="form-control"
+            className={errors.username ? "form-control invalid" : "form-control"}
             placeholder="username"
             name="username"
             value={username}
@@ -196,7 +197,7 @@ export default class LoginForm extends React.Component {
           <input
             id="password"
             type="password"
-            className="form-control"
+            className={errors.password ? "form-control invalid" : "form-control"}
             placeholder="password"
             name="password"
             value={password}
@@ -210,7 +211,7 @@ export default class LoginForm extends React.Component {
           <input
             id="repeatPassword"
             type="password"
-            className="form-control"
+            className={errors.repeatPassword ? "form-control invalid" : "form-control"}
             placeholder="repeatPassword"
             name="repeatPassword"
             value={repeatPassword}

@@ -1,11 +1,11 @@
 import React from "react";
 
-import MovieList from './MovieList';
-import MovieListWillWatch from './MovieListWillWatch';
-import MovieTabs from './MovieTabs';
-import Pagination from './Pagination';
-import YearSelector from './YearSelector';
-import GenresSelector from './GenresSelector';
+import MovieContainer from './Movies/MovieContainer';
+import MovieWillWatchContainer from './Movies/MovieWillWatchContainer';
+import MovieTabs from './Movies/MovieTabs';
+import Pagination from './Pagination/Pagination';
+import YearSelector from './Filters/YearSelector';
+import GenresSelector from './Filters/GenresSelector';
 import Header from './Header';
 
 import { fetchApi } from '../api/api.js';
@@ -43,6 +43,7 @@ class App extends React.Component {
     ],
     currentYear: 2019,
     yearList: [
+      2021,
       2020,
       2019,
       2018,
@@ -166,7 +167,7 @@ class App extends React.Component {
               </div>
               <div className="row">
                 <div className="col">
-                  <MovieList movies={movies} toggleWatchList={this.toggleWatchList} />
+                  <MovieContainer movies={movies} toggleWatchList={this.toggleWatchList} />
                 </div>
               </div>
               <div className="row">
@@ -176,7 +177,7 @@ class App extends React.Component {
               </div>
             </div>
             <div className="col-4">
-              <MovieListWillWatch movies={moviesWillWatch} />
+              <MovieWillWatchContainer movies={moviesWillWatch} />
               <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
               <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
               <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>

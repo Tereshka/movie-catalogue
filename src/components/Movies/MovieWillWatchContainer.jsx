@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MovieListWillWatch(props) {
+export default function MovieWillWatchContainer(props) {
   const { movies } = props;
   return (
     <div>
@@ -17,3 +17,7 @@ export default function MovieListWillWatch(props) {
     </div>
   );
 }
+
+MovieWillWatchContainer.defaultProps = {
+  movies: [],
+};

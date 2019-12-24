@@ -1,7 +1,7 @@
 import React from "react";
 import MovieItem from './MovieItem';
 
-export default function MovieList(props) {
+export default function MovieContainer(props) {
   const { movies, toggleWatchList } = props;
   return (
     <div className="row">
@@ -17,3 +17,8 @@ export default function MovieList(props) {
     </div>
   );
 }
+
+MovieContainer.defaultProps = {
+  movies: [],
+  toggleWatchList: [],
+};

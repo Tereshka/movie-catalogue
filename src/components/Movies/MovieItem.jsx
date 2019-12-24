@@ -1,5 +1,5 @@
 import React from "react";
-import noPoster from '../img/no_poster.jpg';
+import noPoster from '../../img/no_poster.jpg';
 
 export default class MovieItem extends React.Component {
 
