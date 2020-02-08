@@ -4,7 +4,7 @@ import Login from './Login/Login';
 import User from './User';
 
 export default function Header(props) {
-  const {user, updateUser, updateSessionId} = props;
+  const { user } = props;
   return (
     <nav className="navbar sticky-top navbar-dark bg-dark">
       <ul className="navbar-nav">
@@ -12,11 +12,7 @@ export default function Header(props) {
           <a className="nav-link" href="">Home</a>
         </li>
       </ul>
-      { user ? 
-        <User user={user}/>
-      :
-        <Login updateUser={updateUser} updateSessionId={updateSessionId}/>
-      }
+      { user ? <User /> : <Login /> }
     </nav>
   );
 }

@@ -13,6 +13,8 @@ import Cookie from 'universal-cookie';
 
 const cookies = new Cookie();
 
+export const AppContext = React.createContext();
+
 class App extends React.Component {
 
   state = {
@@ -41,7 +43,7 @@ class App extends React.Component {
         sortBy: 'release_date.desc',
       }
     ],
-    currentYear: 2019,
+    currentYear: 2020,
     yearList: [
       2021,
       2020,
@@ -155,36 +157,44 @@ class App extends React.Component {
       totalPages, sortList, currentYear, yearList, genres, 
       genresSelected } = this.state;
     return (
-      <div>
-        <Header user={user} updateUser={this.updateUser} updateSessionId={this.updateSessionId}/>
-        <div className="container">
-          <div className="row mt-3">
-            <div className="col-8">
-              <div className="row mb-3">
-                <div className="col">
-                  <MovieTabs sortList={sortList} sortBy={sortBy} onChangeSortBy={this.onChangeSortBy} />
+      <AppContext.Provider value={{
+        user: user,
+        updateUser: this.updateUser,
+        updateSessionId: this.updateSessionId
+        }}
+      >
+        <div>
+          <Header user={user} />
+          <div className="container">
+            <div className="row mt-3">
+              <div className="col-8">
+                <div className="row mb-3">
+                  <div className="col">
+                    <MovieTabs sortList={sortList} sortBy={sortBy} onChangeSortBy={this.onChangeSortBy} />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <MovieContainer movies={movies} toggleWatchList={this.toggleWatchList} />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage} />
+                  </div>
                 </div>
               </div>
-              <div className="row">
-                <div className="col">
-                  <MovieContainer movies={movies} toggleWatchList={this.toggleWatchList} />
-                </div>
+              <div className="col-4">
+                <MovieWillWatchContainer movies={moviesWillWatch} />
+                <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
+                <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
+                <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>
               </div>
-              <div className="row">
-                <div className="col">
-                  <Pagination activePage={activePage} totalPages={totalPages} onClickPage={this.onClickPage} />
-                </div>
-              </div>
-            </div>
-            <div className="col-4">
-              <MovieWillWatchContainer movies={moviesWillWatch} />
-              <button className="btn btn-primary btn-block mt-3" onClick={this.clearAllFilters}>Clear all filters</button>
-              <YearSelector currentYear={currentYear} yearList={yearList} onChangeYear={this.onChangeYear} />
-              <GenresSelector genres={genres} onChangeCheckbox={this.onChangeCheckbox} genresSelected={genresSelected}/>
             </div>
           </div>
         </div>
-      </div>
+      </AppContext.Provider>
+   
     );
   }
 }

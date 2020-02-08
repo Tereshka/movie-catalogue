@@ -1,6 +1,7 @@
 import React from 'react';
+import {AppContext} from './App';
 
-export default function Header(props) {
+function User(props) {
   const {user} = props;
 
   return (
@@ -14,3 +15,18 @@ export default function Header(props) {
     </div>
   );
 }
+
+const UserContainer = (props) => {
+  return (
+    <AppContext.Consumer>
+      {
+        (context) => {
+          return <User user={context.user} {...props} />
+        }
+      }
+    </AppContext.Consumer>
+  );
+}
+UserContainer.displayName = 'UserContainer';
+
+export default UserContainer;

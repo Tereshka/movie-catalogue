@@ -1,8 +1,8 @@
 import React from 'react';
-
+import {AppContext} from '../App';
 import { fetchApi } from '../../api/api';
 
-export default class LoginForm extends React.Component {
+class LoginForm extends React.Component {
 
   state = {
     apiURL: process.env.REACT_APP_API_URL,
@@ -233,3 +233,11 @@ export default class LoginForm extends React.Component {
     );
   }
 }
+
+export default (props) => {
+  return (
+    <AppContext.Consumer>
+      {context => <LoginForm {...props} updateUser={context.updateUser} updateSessionId={context.updateSessionId} />}
+    </AppContext.Consumer>
+  );
+};
