@@ -1,6 +1,6 @@
 import React from 'react';
 import AppContextHOC from '../HOC/AppContextHOC';
-import { fetchApi } from '../../api/api';
+import CallApi from '../../api/api';
 
 class LoginForm extends React.Component {
 
@@ -129,34 +129,24 @@ class LoginForm extends React.Component {
 
   // Send requests in async style
   sendPromisesAsync = async () => {
-    const {apiURL, apiKey} = this.state;
     this.setState({submitting: true});
     try {
-      const token = await fetchApi(`${apiURL}/authentication/token/new?api_key=${apiKey}`);
-      const tokenWithLogin = await fetchApi(`${apiURL}/authentication/token/validate_with_login?api_key=${apiKey}`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
+      const token = await CallApi.get('/authentication/token/new');
+      const tokenWithLogin = await CallApi.post('/authentication/token/validate_with_login', {
+        body: {
           username: this.state.username,
           password: this.state.password,
           request_token: token.request_token,
-        })
-      });
-      const session = await fetchApi(`${apiURL}/authentication/session/new?api_key=${apiKey}`, {
-        method: 'POST',
-        mode: 'cors',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          request_token: tokenWithLogin.request_token,
-        })
+        }
       });
 
-      const user = await fetchApi(`${apiURL}/account?api_key=${apiKey}&session_id=${session.session_id}`);
+      const session = await CallApi.post('/authentication/session/new', {
+        body: {
+          request_token: tokenWithLogin.request_token,
+        }
+      });
+
+      const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
 
       this.setState({submitting: false});
       this.props.updateUser(user);

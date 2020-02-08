@@ -8,7 +8,7 @@ import YearSelector from './Filters/YearSelector';
 import GenresSelector from './Filters/GenresSelector';
 import Header from './Header';
 
-import { fetchApi } from '../api/api.js';
+import CallApi from '../api/api.js';
 import Cookie from 'universal-cookie';
 
 const cookies = new Cookie();
@@ -25,8 +25,6 @@ class App extends React.Component {
     genres: [],
     genresSelected: [],
     sortBy: 'popularity.desc',
-    apiURL: process.env.REACT_APP_API_URL,
-    apiKey: process.env.REACT_APP_API_KEY,
     activePage: 1,
     totalPages: 0,
     sortList: [
@@ -58,7 +56,7 @@ class App extends React.Component {
   componentDidMount() {
     const sessionId = cookies.get('session_id');
     if (sessionId) {
-      fetchApi(`${this.state.apiURL}/account?api_key=${this.state.apiKey}&session_id=${sessionId}`)
+      CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
           this.updateUser(user);
         });
@@ -92,18 +90,23 @@ class App extends React.Component {
   }
 
   getMovies(page = 1) {
-    const { apiURL, apiKey, sortBy, currentYear, genresSelected } = this.state;
+    const { sortBy, currentYear, genresSelected } = this.state;
     let genres = "";
     genresSelected.forEach(el => genres += el + ',');
-    fetch(`${apiURL}/discover/movie?api_key=${apiKey}&sort_by=${sortBy}&page=${page}&primary_release_year=${currentYear}&with_genres=${genres}`)
-      .then(res => res.json())
+
+    const queryStringParams = {
+      sort_by: sortBy,
+      page: page,
+      primary_release_year: currentYear,
+      with_genres: genres
+    };
+
+    CallApi.get('/discover/movie', { params: queryStringParams })
       .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
   }
 
   getGenres() {
-    const { apiURL, apiKey } = this.state;
-    fetch(`${apiURL}/genre/movie/list?api_key=${apiKey}`)
-      .then(res => res.json())
+    CallApi.get('/genre/movie/list')
       .then(data => this.setState({ genres: data.genres }));
   }
 
