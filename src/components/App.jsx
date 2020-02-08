@@ -22,6 +22,7 @@ class App extends React.Component {
     sessionId: null,
     movies: [],
     moviesWillWatch: [],
+    moviesFavourite: [],
     genres: [],
     genresSelected: [],
     sortBy: 'popularity.desc',
@@ -58,8 +59,8 @@ class App extends React.Component {
     if (sessionId) {
       CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
-          this.updateUser(user);
           this.updateSessionId(sessionId);
+          this.updateUser(user);
         });
     }
     
@@ -81,7 +82,12 @@ class App extends React.Component {
 
   updateUser = user => {
     this.setState({user});
+    if (user) {
+      this.getMoviesWatchList();
+      this.getMoviesFavourite();
+    }
   }
+
   updateSessionId = sessionId => {
     this.setState({sessionId});
     cookies.set('session_id', sessionId, {
@@ -95,6 +101,8 @@ class App extends React.Component {
     this.setState({
       session_id: null,
       user: null,
+      moviesWillWatch: null,
+      moviesFavourite: null,
     });
   }
 
@@ -112,6 +120,18 @@ class App extends React.Component {
 
     CallApi.get('/discover/movie', { params: queryStringParams })
       .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
+  }
+
+  getMoviesWatchList() {
+    const {user, sessionId} = this.state;
+    CallApi.get(`/account/${user.id}/watchlist/movies`, {params: {session_id: sessionId}})
+      .then(data => this.setState({moviesWillWatch: data.results}));
+  }
+
+  getMoviesFavourite() {
+    const {user, sessionId} = this.state;
+    CallApi.get(`/account/${user.id}/favorite/movies`, {params: {session_id: sessionId}})
+      .then(data => this.setState({moviesFavourite: data.results}));
   }
 
   getGenres() {

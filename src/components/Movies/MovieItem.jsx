@@ -1,4 +1,6 @@
 import React from "react";
+
+import { Star, StarBorder, Bookmark, BookmarkBorder } from '@material-ui/icons';
 import noPoster from '../../img/no_poster.jpg';
 
 export default class MovieItem extends React.Component {
@@ -32,6 +34,12 @@ export default class MovieItem extends React.Component {
             {title}
             <span className="badge badge-warning">{vote_average}</span>
           </h5>
+          <div>
+            <Star color="secondary" />
+            <StarBorder color="secondary" />
+            <Bookmark />
+            <BookmarkBorder />
+          </div>
           <button type="button" 
             className="btn btn-block btn-outline-dark"
             data-toggle="modal"
