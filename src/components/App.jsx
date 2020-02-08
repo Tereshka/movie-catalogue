@@ -6,7 +6,7 @@ import MovieTabs from './Movies/MovieTabs';
 import Pagination from './Pagination/Pagination';
 import YearSelector from './Filters/YearSelector';
 import GenresSelector from './Filters/GenresSelector';
-import Header from './Header';
+import Header from './Header/Header';
 
 import CallApi from '../api/api.js';
 import Cookie from 'universal-cookie';
@@ -59,6 +59,7 @@ class App extends React.Component {
       CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
           this.updateUser(user);
+          this.updateSessionId(sessionId);
         });
     }
     
@@ -87,6 +88,14 @@ class App extends React.Component {
       path: '/',
       maxAge: 2592000, // 30 days
     })
+  }
+
+  onLogOut = () => {
+    cookies.remove('session_id');
+    this.setState({
+      session_id: null,
+      user: null,
+    });
   }
 
   getMovies(page = 1) {
@@ -158,12 +167,14 @@ class App extends React.Component {
   render() {
     const { user, movies, moviesWillWatch, sortBy, activePage, 
       totalPages, sortList, currentYear, yearList, genres, 
-      genresSelected } = this.state;
+      genresSelected, sessionId } = this.state;
     return (
       <AppContext.Provider value={{
         user: user,
+        sessionId: sessionId,
         updateUser: this.updateUser,
-        updateSessionId: this.updateSessionId
+        updateSessionId: this.updateSessionId,
+        onLogOut: this.onLogOut
         }}
       >
         <div>

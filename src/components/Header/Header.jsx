@@ -1,7 +1,7 @@
 import React from "react";
 
 import Login from './Login/Login';
-import User from './User';
+import UserMenu from './UserMenu';
 
 export default function Header(props) {
   const { user } = props;
@@ -12,7 +12,7 @@ export default function Header(props) {
           <a className="nav-link" href="">Home</a>
         </li>
       </ul>
-      { user ? <User /> : <Login /> }
+      { user ? <UserMenu /> : <Login /> }
     </nav>
   );
 }

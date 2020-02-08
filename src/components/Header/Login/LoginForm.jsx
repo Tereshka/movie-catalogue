@@ -1,6 +1,6 @@
 import React from 'react';
-import AppContextHOC from '../HOC/AppContextHOC';
-import CallApi from '../../api/api';
+import AppContextHOC from '../../HOC/AppContextHOC';
+import CallApi from '../../../api/api';
 
 class LoginForm extends React.Component {
 
