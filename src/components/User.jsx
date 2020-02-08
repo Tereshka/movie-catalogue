@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppContext} from './App';
+import AppContextHOC from './HOC/AppContextHOC';
 
 function User(props) {
   const {user} = props;
@@ -16,17 +16,4 @@ function User(props) {
   );
 }
 
-const UserContainer = (props) => {
-  return (
-    <AppContext.Consumer>
-      {
-        (context) => {
-          return <User user={context.user} {...props} />
-        }
-      }
-    </AppContext.Consumer>
-  );
-}
-UserContainer.displayName = 'UserContainer';
-
-export default UserContainer;
+export default AppContextHOC(User);

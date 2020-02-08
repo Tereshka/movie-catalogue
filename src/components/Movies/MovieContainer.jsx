@@ -1,5 +1,6 @@
 import React from "react";
 import MovieItem from './MovieItem';
+import PropTypes from 'prop-types';
 
 export default function MovieContainer(props) {
   const { movies, toggleWatchList } = props;
@@ -21,4 +22,8 @@ export default function MovieContainer(props) {
 MovieContainer.defaultProps = {
   movies: [],
   toggleWatchList: [],
+};
+
+MovieContainer.propTypes = {
+  movies: PropTypes.array.isRequired,
 };
