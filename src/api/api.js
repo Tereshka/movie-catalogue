@@ -16,9 +16,9 @@ export const fetchApi = (url, options = {}) => {
       .then(data => {
         resolve(data);
       })
-      .catch(response => {
+      .catch(res => {
         // reject(response);
-        response.json().then(error => {
+        res.json().then(error => {
           reject(error);
         });
       });

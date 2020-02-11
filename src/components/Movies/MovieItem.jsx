@@ -7,6 +7,9 @@ export default class MovieItem extends React.Component {
 
   state = {
     isInWatchList: false,
+
+    isFavourite: false,
+    inWatchList: false,
   }
 
   onClickHandle = () => {
@@ -21,11 +24,39 @@ export default class MovieItem extends React.Component {
     return noPoster;
   }
 
+  getFavourite = () => {
+    const { movie, moviesFavourite } = this.props;
+    if (moviesFavourite.map(m => m.id).find(el => el === movie.id)) {
+      this.setState({ isFavourite: true });
+    } else {
+      this.setState({ isFavourite: false });
+    }
+  }
+
+  getInWatchList = () => {
+    const { movie, moviesWillWatch } = this.props;
+    if (moviesWillWatch.map(m => m.id).find(el => el === movie.id)) {
+      this.setState({ inWatchList: true });
+    } else {
+      this.setState({ inWatchList: false });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.moviesFavourite !== this.props.moviesFavourite) {
+      this.getFavourite();
+    }
+    if (prevProps.moviesWillWatch !== this.props.moviesWillWatch) {
+      this.getFavourite();
+    }
+  }
+
   render() {
-    const { movie } = this.props;
+    const { movie, user } = this.props;
     const { title, poster_path, overview, vote_average, id } = movie;
-    const { isInWatchList } = this.state;
+    const { isInWatchList, isFavourite, inWatchList } = this.state;
     const buttonClass = `btn btn-block ${isInWatchList ? "btn-primary" : "btn-secondary"}`;
+
     return (
       <div className="card">
         <img className="card-img-top" src={this.getPosterSrc(poster_path)} alt={title} />
@@ -34,12 +65,14 @@ export default class MovieItem extends React.Component {
             {title}
             <span className="badge badge-warning">{vote_average}</span>
           </h5>
-          <div>
-            <Star color="secondary" />
-            <StarBorder color="secondary" />
-            <Bookmark />
-            <BookmarkBorder />
-          </div>
+          { user &&
+            <div>
+              {isFavourite && <Star color="secondary" />}
+              {!isFavourite &&<StarBorder color="secondary" />}
+              {inWatchList &&<Bookmark onClick={() => this.props.setWatchList(movie, false)}/>}
+              {!inWatchList && <BookmarkBorder onClick={() => this.props.setWatchList(movie, true)} />}
+            </div>
+          }
           <button type="button" 
             className="btn btn-block btn-outline-dark"
             data-toggle="modal"

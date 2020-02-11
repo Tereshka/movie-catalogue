@@ -149,8 +149,9 @@ class LoginForm extends React.Component {
       const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
 
       this.setState({submitting: false});
-      this.props.updateUser(user);
+      
       this.props.updateSessionId(session.session_id);
+      this.props.updateUser(user);
     } catch (error) {
       // error.json().then(error => console.log(error));
 

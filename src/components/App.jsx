@@ -78,6 +78,9 @@ class App extends React.Component {
     if (prevState.genresSelected !== this.state.genresSelected) {
       this.getMovies();
     }
+    // if (prevState.sessionId !== this.state.sessionId && this.state.sessionId !== null) {
+    //   this.getMovies();
+    // }
   }
 
   updateUser = user => {
@@ -101,8 +104,8 @@ class App extends React.Component {
     this.setState({
       session_id: null,
       user: null,
-      moviesWillWatch: null,
-      moviesFavourite: null,
+      moviesWillWatch: [],
+      moviesFavourite: [],
     });
   }
 
@@ -144,7 +147,37 @@ class App extends React.Component {
       genresSelected: [],
       sortBy: 'popularity.desc',
       activePage: 1,
-      currentYear: 2019,
+      currentYear: 2020,
+    });
+  }
+
+  setFavouriteMovie = (movie, favorite) => {
+    const {user, sessionId} = this.state;
+    CallApi.post(`/account/${user.id}/favorite`, {
+      params: {
+        session_id: sessionId
+      },
+      body: {
+        media_type: 'movie',
+        media_id: movie.id,
+        favorite: favorite,
+      },
+    });
+  }
+
+  setWatchList = (movie, watchlist) => {
+    const {user, sessionId} = this.state;
+    CallApi.post(`/account/${user.id}/watchlist`, {
+      params: {
+        session_id: sessionId
+      },
+      body: {
+        media_type: 'movie',
+        media_id: movie.id,
+        watchlist: watchlist,
+      },
+    }).then(() => {
+      this.toggleWatchList(movie);
     });
   }
 
@@ -187,7 +220,7 @@ class App extends React.Component {
   render() {
     const { user, movies, moviesWillWatch, sortBy, activePage, 
       totalPages, sortList, currentYear, yearList, genres, 
-      genresSelected, sessionId } = this.state;
+      genresSelected, sessionId, moviesFavourite } = this.state;
     return (
       <AppContext.Provider value={{
         user: user,
@@ -209,7 +242,12 @@ class App extends React.Component {
                 </div>
                 <div className="row">
                   <div className="col">
-                    <MovieContainer movies={movies} toggleWatchList={this.toggleWatchList} />
+                    <MovieContainer 
+                    user={user} 
+                    movies={movies} 
+                    moviesWillWatch={moviesWillWatch}
+                    moviesFavourite={moviesFavourite}
+                    toggleWatchList={this.toggleWatchList} setWatchList={this.setWatchList}/>
                   </div>
                 </div>
                 <div className="row">
