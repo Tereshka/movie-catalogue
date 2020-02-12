@@ -78,17 +78,6 @@ class App extends React.Component {
     if (prevState.genresSelected !== this.state.genresSelected) {
       this.getMovies();
     }
-    // if (prevState.sessionId !== this.state.sessionId && this.state.sessionId !== null) {
-    //   this.getMovies();
-    // }
-  }
-
-  updateUser = user => {
-    this.setState({user});
-    if (user) {
-      this.getMoviesWatchList();
-      this.getMoviesFavourite();
-    }
   }
 
   updateSessionId = sessionId => {
@@ -97,6 +86,15 @@ class App extends React.Component {
       path: '/',
       maxAge: 2592000, // 30 days
     })
+  }
+
+  updateUser = user => {
+    this.setState({user});
+    
+    if (user) {
+      this.getMoviesWatchList(user.id);
+      this.getMoviesFavourite(user.id);
+    }
   }
 
   onLogOut = () => {
@@ -125,15 +123,15 @@ class App extends React.Component {
       .then(data => this.setState({ movies: data.results, totalPages: data.total_pages }));
   }
 
-  getMoviesWatchList() {
-    const {user, sessionId} = this.state;
-    CallApi.get(`/account/${user.id}/watchlist/movies`, {params: {session_id: sessionId}})
+  getMoviesWatchList(userId) {
+    const { sessionId} = this.state;
+    CallApi.get(`/account/${userId}/watchlist/movies`, {params: {session_id: sessionId}})
       .then(data => this.setState({moviesWillWatch: data.results}));
   }
 
-  getMoviesFavourite() {
-    const {user, sessionId} = this.state;
-    CallApi.get(`/account/${user.id}/favorite/movies`, {params: {session_id: sessionId}})
+  getMoviesFavourite(userId) {
+    const { sessionId} = this.state;
+    CallApi.get(`/account/${userId}/favorite/movies`, {params: {session_id: sessionId}})
       .then(data => this.setState({moviesFavourite: data.results}));
   }
 
@@ -162,6 +160,10 @@ class App extends React.Component {
         media_id: movie.id,
         favorite: favorite,
       },
+    }).then((res) => {
+      if (res.status_code === 1 || res.status_code === 13) {
+        this.toggleFavouriteMovie(movie, favorite);
+      }
     });
   }
 
@@ -176,8 +178,10 @@ class App extends React.Component {
         media_id: movie.id,
         watchlist: watchlist,
       },
-    }).then(() => {
-      this.toggleWatchList(movie);
+    }).then((res) => {
+      if (res.status_code === 1 || res.status_code === 13) {
+        this.toggleWatchList(movie, watchlist);
+      }
     });
   }
 
@@ -200,16 +204,26 @@ class App extends React.Component {
     this.setState({genresSelected: newGenres, activePage: 1});
 	};
 
-  toggleWatchList = movie => {
+  toggleWatchList = (movie, watchlist) => {
     let newMoviesWillWatch;
-    if (this.state.moviesWillWatch.find(m => m.id === movie.id)) {
+    if (!watchlist) {
       newMoviesWillWatch = this.state.moviesWillWatch.filter(m => m.id !== movie.id);
     } else {
       newMoviesWillWatch = [...this.state.moviesWillWatch];
       newMoviesWillWatch.push(movie);
     }
-
     this.setState({ moviesWillWatch: newMoviesWillWatch });
+  }
+
+  toggleFavouriteMovie = (movie, favourite) => {
+    let newMoviesFavourite;
+    if (!favourite) {
+      newMoviesFavourite = this.state.moviesFavourite.filter(m => m.id !== movie.id);
+    } else {
+      newMoviesFavourite = [...this.state.moviesFavourite];
+      newMoviesFavourite.push(movie);
+    }
+    this.setState({ moviesFavourite: newMoviesFavourite });
   }
 
   onClickPage = (page) => {
@@ -243,11 +257,13 @@ class App extends React.Component {
                 <div className="row">
                   <div className="col">
                     <MovieContainer 
-                    user={user} 
-                    movies={movies} 
-                    moviesWillWatch={moviesWillWatch}
-                    moviesFavourite={moviesFavourite}
-                    toggleWatchList={this.toggleWatchList} setWatchList={this.setWatchList}/>
+                      user={user} 
+                      movies={movies} 
+                      moviesWillWatch={moviesWillWatch}
+                      moviesFavourite={moviesFavourite}
+                      setFavouriteMovie={this.setFavouriteMovie}
+                      setWatchList={this.setWatchList}
+                    />
                   </div>
                 </div>
                 <div className="row">
