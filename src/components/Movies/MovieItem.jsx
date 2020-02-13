@@ -1,9 +1,10 @@
 import React from "react";
+import MovieContextHOC from '../HOC/MovieContextHOC';
 
 import { Star, StarBorder, Bookmark, BookmarkBorder } from '@material-ui/icons';
 import noPoster from '../../img/no_poster.jpg';
 
-export default class MovieItem extends React.Component {
+class MovieItem extends React.Component {
 
   state = {
 
@@ -16,28 +17,19 @@ export default class MovieItem extends React.Component {
     return noPoster;
   }
 
-  getFavourite() {
-    const { movie, moviesFavourite } = this.props;
-    if (moviesFavourite.map(m => m.id).find(el => el === movie.id)) {
-      return true;
-    }
-    return false;
-  }
-
-  getInWatchList() {
-    const { movie, moviesWillWatch } = this.props;
-    if (moviesWillWatch.map(m => m.id).find(el => el === movie.id)) {
+  isInArray(movie, array) {
+    if (array.map(m => m.id).find(el => el === movie.id)) {
       return true;
     }
     return false;
   }
 
   render() {
-    const { movie, user, setWatchList, setFavouriteMovie } = this.props;
+    const { movie, user, moviesFavourite, moviesWillWatch, setWatchList, setFavouriteMovie } = this.props;
     const { title, poster_path, overview, vote_average, id } = movie;
 
-    let isFavourite = this.getFavourite();
-    let inWatchList = this.getInWatchList();
+    let isFavourite = this.isInArray(movie, moviesFavourite);
+    let inWatchList = this.isInArray(movie, moviesWillWatch);
 
     return (
       <div className="card">
@@ -49,10 +41,18 @@ export default class MovieItem extends React.Component {
           </h5>
           { user &&
             <div>
-              {isFavourite && <Star color="secondary" onClick={() => setFavouriteMovie(movie, false)}/>}
-              {!isFavourite && <StarBorder color="secondary" onClick={() => setFavouriteMovie(movie, true)}/>}
-              {inWatchList && <Bookmark onClick={() => setWatchList(movie, false)}/>}
-              {!inWatchList && <BookmarkBorder onClick={() => setWatchList(movie, true)} />}
+              { isFavourite &&
+                <Star color="secondary" className="icon" onClick={() => setFavouriteMovie(movie, false)}/>
+              }
+              { !isFavourite &&
+                <StarBorder color="secondary" className="icon" onClick={() => setFavouriteMovie(movie, true)}/>
+              }
+              { inWatchList &&
+                <Bookmark className="icon" onClick={() => setWatchList(movie, false)}/>
+              }
+              { !inWatchList &&
+                <BookmarkBorder className="icon" onClick={() => setWatchList(movie, true)} />
+              }
             </div>
           }
           <button type="button" 
@@ -84,3 +84,4 @@ export default class MovieItem extends React.Component {
 
 }
 
+export default MovieContextHOC(MovieItem);

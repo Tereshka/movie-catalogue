@@ -14,6 +14,7 @@ import Cookie from 'universal-cookie';
 const cookies = new Cookie();
 
 export const AppContext = React.createContext();
+export const MovieContext = React.createContext();
 
 class App extends React.Component {
 
@@ -241,11 +242,11 @@ class App extends React.Component {
         sessionId: sessionId,
         updateUser: this.updateUser,
         updateSessionId: this.updateSessionId,
-        onLogOut: this.onLogOut
+        onLogOut: this.onLogOut,
         }}
       >
         <div>
-          <Header user={user} />
+          <Header user={user} sessionId={sessionId}/>
           <div className="container">
             <div className="row mt-3">
               <div className="col-8">
@@ -256,14 +257,15 @@ class App extends React.Component {
                 </div>
                 <div className="row">
                   <div className="col">
-                    <MovieContainer 
-                      user={user} 
-                      movies={movies} 
-                      moviesWillWatch={moviesWillWatch}
-                      moviesFavourite={moviesFavourite}
-                      setFavouriteMovie={this.setFavouriteMovie}
-                      setWatchList={this.setWatchList}
-                    />
+                    <MovieContext.Provider value={{
+                      user: user,
+                      moviesWillWatch: moviesWillWatch,
+                      moviesFavourite: moviesFavourite,
+                      setFavouriteMovie: this.setFavouriteMovie,
+                      setWatchList: this.setWatchList,
+                    }}>
+                    <MovieContainer movies={movies} />
+                    </MovieContext.Provider>
                   </div>
                 </div>
                 <div className="row">

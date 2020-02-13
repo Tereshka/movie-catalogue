@@ -13,6 +13,12 @@ export default class Login extends React.Component {
     this.setState({showLoginModal: !this.state.showLoginModal});
   }
 
+  componentDidMount() {
+    if (!this.props.sessionId) {
+      this.setState({showLoginModal: true});
+    }
+  }
+
   render() {
     return (
       <div>
