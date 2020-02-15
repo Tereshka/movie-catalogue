@@ -1,5 +1,4 @@
 import React from "react";
-import MovieContextHOC from '../HOC/MovieContextHOC';
 
 import { Star, StarBorder, Bookmark, BookmarkBorder } from '@material-ui/icons';
 import noPoster from '../../img/no_poster.jpg';
@@ -84,4 +83,4 @@ class MovieItem extends React.Component {
 
 }
 
-export default MovieContextHOC(MovieItem);
+export default MovieItem;

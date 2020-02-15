@@ -7,6 +7,7 @@ import Pagination from './Pagination/Pagination';
 import YearSelector from './Filters/YearSelector';
 import GenresSelector from './Filters/GenresSelector';
 import Header from './Header/Header';
+import {MovieContextProvider} from './Movies/movieContext';
 
 import CallApi from '../api/api.js';
 import Cookie from 'universal-cookie';
@@ -14,7 +15,6 @@ import Cookie from 'universal-cookie';
 const cookies = new Cookie();
 
 export const AppContext = React.createContext();
-export const MovieContext = React.createContext();
 
 class App extends React.Component {
 
@@ -257,15 +257,15 @@ class App extends React.Component {
                 </div>
                 <div className="row">
                   <div className="col">
-                    <MovieContext.Provider value={{
+                    <MovieContextProvider value={{
                       user: user,
                       moviesWillWatch: moviesWillWatch,
                       moviesFavourite: moviesFavourite,
                       setFavouriteMovie: this.setFavouriteMovie,
                       setWatchList: this.setWatchList,
                     }}>
-                    <MovieContainer movies={movies} />
-                    </MovieContext.Provider>
+                      <MovieContainer movies={movies} />
+                    </MovieContextProvider>
                   </div>
                 </div>
                 <div className="row">
