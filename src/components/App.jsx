@@ -3,6 +3,7 @@ import React from "react";
 import Header from './Header/Header';
 import MoviesPage from './pages/MoviesPage';
 import MoviePage from './pages/MoviePage';
+import {MovieContextConsumer} from './Movies/movieContext';
 
 import { BrowserRouter, Route } from 'react-router-dom';
 
@@ -66,7 +67,13 @@ class App extends React.Component {
           <div>
             <Header user={user} sessionId={sessionId}/>
             <Route exact path="/" render={(props) => <MoviesPage {...props} user={user} sessionId={sessionId}/>} />
-            <Route path="/movie" component={MoviePage} />
+            <Route path="/movie/:id" render={(props) =>
+              <MovieContextConsumer>
+                {
+                  context => <MoviePage {...props} {...context}/>
+                }
+              </MovieContextConsumer>}
+            />
           </div>
         </AppContext.Provider>
       </BrowserRouter>

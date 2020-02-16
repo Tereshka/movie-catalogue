@@ -205,8 +205,7 @@ export default class MoviesPage extends React.Component {
   }
 
   render() {
-    const { movies, moviesWillWatch, sortBy, activePage, 
-      totalPages, sortList, currentYear, yearList, genres, 
+    const { movies, moviesWillWatch, sortBy, activePage, totalPages, sortList, currentYear, yearList, genres, 
       genresSelected, moviesFavourite } = this.state;
     const {user} = this.props;
     return (

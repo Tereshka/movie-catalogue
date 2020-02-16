@@ -1,13 +1,11 @@
 import React from "react";
+import { Link } from 'react-router-dom';
+import ActionIcons from '../UIComponents/ActionIcons';
+import {MovieContextConsumer} from './movieContext';
 
-import { Star, StarBorder, Bookmark, BookmarkBorder } from '@material-ui/icons';
-import noPoster from '../../img/no_poster.jpg';
+import noPoster from '../../img/no_poster_album.jpg';
 
 class MovieItem extends React.Component {
-
-  state = {
-
-  }
 
   getPosterSrc(value) {
     if (value) {
@@ -16,45 +14,24 @@ class MovieItem extends React.Component {
     return noPoster;
   }
 
-  isInArray(movie, array) {
-    if (array.map(m => m.id).find(el => el === movie.id)) {
-      return true;
-    }
-    return false;
-  }
-
   render() {
-    const { movie, user, moviesFavourite, moviesWillWatch, setWatchList, setFavouriteMovie } = this.props;
-    const { title, poster_path, overview, vote_average, id } = movie;
-
-    let isFavourite = this.isInArray(movie, moviesFavourite);
-    let inWatchList = this.isInArray(movie, moviesWillWatch);
+    const { movie } = this.props;
+    const { title, backdrop_path, overview, vote_average, id } = movie;
 
     return (
       <div className="card">
-        <img className="card-img-top" src={this.getPosterSrc(poster_path)} alt={title} />
+        <img className="card-img-top" src={this.getPosterSrc(backdrop_path)} alt={title} />
         <div className="card-body">
-          <h5 className="card-title">
-            {title}
+          <div className="card-title">
+            <Link to={`/movie/${movie.id}/detail`}>{title}</Link>
             <span className="badge badge-warning">{vote_average}</span>
-          </h5>
-          { user &&
-            <div>
-              { isFavourite &&
-                <Star color="secondary" className="icon" onClick={() => setFavouriteMovie(movie, false)}/>
-              }
-              { !isFavourite &&
-                <StarBorder color="secondary" className="icon" onClick={() => setFavouriteMovie(movie, true)}/>
-              }
-              { inWatchList &&
-                <Bookmark className="icon" onClick={() => setWatchList(movie, false)}/>
-              }
-              { !inWatchList &&
-                <BookmarkBorder className="icon" onClick={() => setWatchList(movie, true)} />
-              }
-            </div>
-          }
-          <button type="button" 
+          </div>
+          <MovieContextConsumer>
+            {
+              context => <ActionIcons movie={movie} {...context} />
+            }
+          </MovieContextConsumer>
+          <button type="button"
             className="btn btn-block btn-outline-dark mt-2"
             data-toggle="modal"
             data-target={`#itemModal-${id}`}
