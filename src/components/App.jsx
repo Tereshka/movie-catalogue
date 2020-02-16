@@ -5,7 +5,7 @@ import MoviesPage from './pages/MoviesPage';
 import MoviePage from './pages/MoviePage';
 import {MovieContextConsumer} from './Movies/movieContext';
 
-import { BrowserRouter, Route } from 'react-router-dom';
+import { HashRouter, Route } from 'react-router-dom';
 
 import CallApi from '../api/api.js';
 import Cookie from 'universal-cookie';
@@ -55,7 +55,7 @@ class App extends React.Component {
   render() {
     const { user, sessionId } = this.state;
     return (
-      <BrowserRouter>
+      <HashRouter basename='/'>
         <AppContext.Provider value={{
           user: user,
           sessionId: sessionId,
@@ -76,7 +76,7 @@ class App extends React.Component {
             />
           </div>
         </AppContext.Provider>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
