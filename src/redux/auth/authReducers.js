@@ -2,7 +2,7 @@ import {
   UPDATE_AUTH,
   LOGOUT,
   TOGGLE_LOGIN_MODAL,
-} from '../actions/auth';
+} from './authTypes';
 import Cookie from 'universal-cookie';
 
 const cookies = new Cookie();

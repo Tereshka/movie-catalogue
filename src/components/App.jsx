@@ -9,7 +9,7 @@ import {MovieContextConsumer} from './Movies/movieContext';
 import { HashRouter, Route } from 'react-router-dom';
 
 import CallApi from '../api/api.js';
-import { updateAuth, logout, toggleLoginModal } from '../actions/auth';
+import { updateAuth, logout, toggleLoginModal } from '../redux/auth/authActions';
 import { connect } from 'react-redux';
 
 
