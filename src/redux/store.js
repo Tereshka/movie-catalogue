@@ -1,8 +1,19 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import rootReducer from './rootReducer';
+
+// addition for redux debug
+const composeEnhancers = composeWithDevTools({});
+
+const logger = store => next => action => {
+  console.log(action.type);
+  return next(action);
+}
 
 const store = createStore(
   rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeEnhancers(
+    applyMiddleware(logger)
+  )
 );
 export default store;
