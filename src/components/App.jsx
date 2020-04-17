@@ -9,6 +9,7 @@ import { HashRouter, Route } from 'react-router-dom';
 
 import CallApi from '../api/api.js';
 import { actionUpdateAuth, actionLogout } from '../actions/auth';
+import { connect } from 'react-redux';
 
 
 export const AppContext = React.createContext();
@@ -16,42 +17,26 @@ export const AppContext = React.createContext();
 class App extends React.Component {
 
   componentDidMount() {
-    const { store } = this.props;
-    const { sessionId } = store.getState();
-
-    store.subscribe(() => {
-      console.log("change", store.getState());
-      this.forceUpdate();
-    });
+    const { sessionId, updateAuth } = this.props;
 
     if (sessionId) {
       CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
-          this.updateAuth(user, sessionId);
+          updateAuth(user, sessionId);
         });
     }
   }
 
-  updateAuth = (user, sessionId) => {
-    this.props.store.dispatch(actionUpdateAuth({
-      user,
-      sessionId,
-    }));
-  }
-
-  onLogOut = () => {
-    this.props.store.dispatch(actionLogout());
-  }
-
   render() {
-    const { user, sessionId, isAuth } = this.props.store.getState();
+    const { user, sessionId, isAuth, updateAuth, onLogOut } = this.props;
     return isAuth || !sessionId ? (
       <HashRouter basename='/'>
         <AppContext.Provider value={{
-          user: user,
-          sessionId: sessionId,
-          updateAuth: this.updateAuth,
-          onLogOut: this.onLogOut,
+          user,
+          sessionId,
+          isAuth,
+          updateAuth,
+          onLogOut,
           }}
         >
           <div>
@@ -73,4 +58,19 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  const { user, sessionId, isAuth } = state;
+  return {
+    user,
+    sessionId,
+    isAuth,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateAuth: (user, sessionId) => dispatch(actionUpdateAuth({user, sessionId})),
+    onLogOut: () => dispatch(actionLogout()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
