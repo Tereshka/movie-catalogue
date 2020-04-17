@@ -48,10 +48,10 @@ class LoginForm extends React.Component {
     if ((field === 'password' || field === undefined) && this.state.password === '') {
       errors.password = 'Password is required';
     }
-    if ((field === 'repeatPassword' || field === undefined)
-      && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
-      errors.repeatPassword = 'Passwords should be equal';
-    }
+    // if ((field === 'repeatPassword' || field === undefined)
+    //   && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
+    //   errors.repeatPassword = 'Passwords should be equal';
+    // }
 
     return errors;
   }
@@ -70,28 +70,6 @@ class LoginForm extends React.Component {
       this.sendPromisesAsync();
     }
   }
-
-  // Moved into separate file
-  // fetchApi = (url, options = {}) => {
-  //   return new Promise((resolve, reject) => {
-  //     fetch(url, options)
-  //       .then(response => {
-  //         if (response.status < 400) {
-  //           return response.json();
-  //         } else {
-  //           throw response;
-  //         }
-  //       })
-  //       .then(data => {
-  //         resolve(data);
-  //       })
-  //       .catch(response => {
-  //         response.json().then(error => {
-  //           reject(error);
-  //         });
-  //       });
-  //   });
-  // };
 
   // // Send requests in chain
   // sendPromises = () => {
@@ -148,10 +126,9 @@ class LoginForm extends React.Component {
 
       const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
 
+      this.props.updateAuth(user, session.session_id);
+
       this.setState({submitting: false});
-      
-      this.props.updateSessionId(session.session_id);
-      this.props.updateUser(user);
     } catch (error) {
       // error.json().then(error => console.log(error));
 
@@ -197,7 +174,7 @@ class LoginForm extends React.Component {
           />
           {errors.password && <div className="invalid-feedback">{errors.password}</div> }
         </div>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label htmlFor="repeatPassword">Repeat Password</label>
           <input
             id="repeatPassword"
@@ -210,7 +187,7 @@ class LoginForm extends React.Component {
             onBlur={this.handleBlur}
           />
           {errors.repeatPassword && <div className="invalid-feedback">{errors.repeatPassword}</div> }
-        </div>
+    </div> */}
         <button
           className="btn btn-block btn-primary my-2 my-sm-0"
           type="submit"

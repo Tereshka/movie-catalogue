@@ -5,4 +5,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./stylesheets/index.css";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+import store from './store/store';
+
+ReactDOM.render(<App store={store}/>, document.getElementById("root"));

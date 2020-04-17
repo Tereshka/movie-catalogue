@@ -8,59 +8,49 @@ import {MovieContextConsumer} from './Movies/movieContext';
 import { HashRouter, Route } from 'react-router-dom';
 
 import CallApi from '../api/api.js';
-import Cookie from 'universal-cookie';
+import { actionUpdateAuth, actionLogout } from '../actions/auth';
 
-const cookies = new Cookie();
 
 export const AppContext = React.createContext();
 
 class App extends React.Component {
 
-  state = {
-    user: null,
-    sessionId: null,
-  }
-
   componentDidMount() {
-    const sessionId = cookies.get('session_id');
+    const { store } = this.props;
+    const { sessionId } = store.getState();
+
+    store.subscribe(() => {
+      console.log("change", store.getState());
+      this.forceUpdate();
+    });
+
     if (sessionId) {
       CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
-          this.updateSessionId(sessionId);
-          this.updateUser(user);
+          this.updateAuth(user, sessionId);
         });
     }
   }
 
-  updateSessionId = sessionId => {
-    this.setState({sessionId});
-    cookies.set('session_id', sessionId, {
-      path: '/',
-      maxAge: 2592000, // 30 days
-    })
-  }
-
-  updateUser = user => {
-    this.setState({user});
+  updateAuth = (user, sessionId) => {
+    this.props.store.dispatch(actionUpdateAuth({
+      user,
+      sessionId,
+    }));
   }
 
   onLogOut = () => {
-    cookies.remove('session_id');
-    this.setState({
-      session_id: null,
-      user: null,
-    });
+    this.props.store.dispatch(actionLogout());
   }
 
   render() {
-    const { user, sessionId } = this.state;
-    return (
+    const { user, sessionId, isAuth } = this.props.store.getState();
+    return isAuth || !sessionId ? (
       <HashRouter basename='/'>
         <AppContext.Provider value={{
           user: user,
           sessionId: sessionId,
-          updateUser: this.updateUser,
-          updateSessionId: this.updateSessionId,
+          updateAuth: this.updateAuth,
           onLogOut: this.onLogOut,
           }}
         >
@@ -77,6 +67,8 @@ class App extends React.Component {
           </div>
         </AppContext.Provider>
       </HashRouter>
+    ) : (
+      <p>...Loading</p>
     );
   }
 }
