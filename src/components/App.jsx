@@ -1,6 +1,7 @@
 import React from "react";
 
 import Header from './Header/Header';
+import Login from './Header/Login/Login'
 import MoviesPage from './pages/MoviesPage';
 import MoviePage from './pages/MoviePage';
 import {MovieContextConsumer} from './Movies/movieContext';
@@ -8,7 +9,7 @@ import {MovieContextConsumer} from './Movies/movieContext';
 import { HashRouter, Route } from 'react-router-dom';
 
 import CallApi from '../api/api.js';
-import { actionUpdateAuth, actionLogout } from '../actions/auth';
+import { updateAuth, logout, toggleLoginModal } from '../actions/auth';
 import { connect } from 'react-redux';
 
 
@@ -17,31 +18,36 @@ export const AppContext = React.createContext();
 class App extends React.Component {
 
   componentDidMount() {
-    const { sessionId, updateAuth } = this.props;
+    const { sessionId, updateAuth, toggleLoginModal } = this.props;
 
     if (sessionId) {
       CallApi.get('/account', {params: {session_id: sessionId}})
         .then(user => {
-          updateAuth(user, sessionId);
+          updateAuth({user, sessionId});
         });
+    } else {
+      toggleLoginModal();
     }
   }
 
   render() {
-    const { user, sessionId, isAuth, updateAuth, onLogOut } = this.props;
+    const { user, sessionId, isAuth, showLoginModal, updateAuth, logout, toggleLoginModal } = this.props;
     return isAuth || !sessionId ? (
       <HashRouter basename='/'>
         <AppContext.Provider value={{
           user,
           sessionId,
           isAuth,
+          showLoginModal,
           updateAuth,
-          onLogOut,
+          logout,
+          toggleLoginModal,
           }}
         >
           <div>
             <Header user={user} sessionId={sessionId}/>
-            <Route exact path="/" render={(props) => <MoviesPage {...props} user={user} sessionId={sessionId}/>} />
+            {showLoginModal && <Login />}
+            <Route exact path="/"> <MoviesPage user={user} sessionId={sessionId}/></Route>
             <Route path="/movie/:id" render={(props) =>
               <MovieContextConsumer>
                 {
@@ -59,18 +65,18 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { user, sessionId, isAuth } = state;
+  const { user, sessionId, isAuth, showLoginModal } = state.auth;
   return {
     user,
     sessionId,
     isAuth,
+    showLoginModal,
   };
 };
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateAuth: (user, sessionId) => dispatch(actionUpdateAuth({user, sessionId})),
-    onLogOut: () => dispatch(actionLogout()),
-  };
+const mapDispatchToProps =  {
+  logout,
+  updateAuth,
+  toggleLoginModal,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

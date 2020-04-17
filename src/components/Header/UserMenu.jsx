@@ -19,7 +19,7 @@ class UserMenu extends React.Component {
 
   handleLogOut = () => {
     CallApi.delete('/authentication/session', {body: {session_id: this.props.sessionId}})
-      .then( () => this.props.onLogOut());
+      .then( () => this.props.logout());
   }
 
   render() {

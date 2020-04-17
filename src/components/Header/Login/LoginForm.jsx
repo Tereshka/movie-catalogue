@@ -5,8 +5,6 @@ import CallApi from '../../../api/api';
 class LoginForm extends React.Component {
 
   state = {
-    apiURL: process.env.REACT_APP_API_URL,
-    apiKey: process.env.REACT_APP_API_KEY,
     username: '',
     password: '',
     repeatPassword: '',
@@ -48,6 +46,7 @@ class LoginForm extends React.Component {
     if ((field === 'password' || field === undefined) && this.state.password === '') {
       errors.password = 'Password is required';
     }
+    // Unnecessary field
     // if ((field === 'repeatPassword' || field === undefined)
     //   && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
     //   errors.repeatPassword = 'Passwords should be equal';
@@ -71,40 +70,6 @@ class LoginForm extends React.Component {
     }
   }
 
-  // // Send requests in chain
-  // sendPromises = () => {
-  //   const {apiURL, apiKey} = this.state;
-  //   this.fetchApi(`${apiURL}/authentication/token/new?api_key=${apiKey}`)
-  //     .then(data => 
-  //       this.fetchApi(`${apiURL}/authentication/token/validate_with_login?api_key=${apiKey}`, {
-  //         method: 'POST',
-  //         mode: 'cors',
-  //         headers: {
-  //           'Content-type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           username: this.state.username,
-  //           password: this.state.password,
-  //           request_token: data.request_token,
-  //         })
-  //       })
-  //     )
-  //     .then(data => 
-  //       this.fetchApi(`${apiURL}/authentication/session/new?api_key=${apiKey}`, {
-  //         method: 'POST',
-  //         mode: 'cors',
-  //         headers: {
-  //           'Content-type': 'application/json',
-  //         },
-  //         body: JSON.stringify({
-  //           request_token: data.request_token,
-  //         })
-  //       })
-  //     )
-  //     .then(data => console.log(data))
-  //     .catch(error => console.log('error', error));
-  // }
-
   // Send requests in async style
   sendPromisesAsync = async () => {
     this.setState({submitting: true});
@@ -126,9 +91,9 @@ class LoginForm extends React.Component {
 
       const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
 
-      this.props.updateAuth(user, session.session_id);
-
+      this.props.updateAuth({user, sessionId: session.session_id});
       this.setState({submitting: false});
+      this.props.toggleLoginModal();
     } catch (error) {
       // error.json().then(error => console.log(error));
 

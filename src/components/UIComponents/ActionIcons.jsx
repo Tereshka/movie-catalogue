@@ -15,9 +15,8 @@ export default class ActionIcons extends React.Component {
     let isFavourite = this.isInArray(movie, moviesFavourite);
     let inWatchList = this.isInArray(movie, moviesWillWatch);
 
-    return (
-      user &&
-      <div>
+    return user ? 
+      (<div>
         {isFavourite &&
           <Favorite color="secondary" className="icon" onClick={() => setFavouriteMovie(movie, false)} />
         }
@@ -30,7 +29,6 @@ export default class ActionIcons extends React.Component {
         {!inWatchList &&
           <BookmarkBorder className="icon" onClick={() => setWatchList(movie, true)} />
         }
-      </div>
-    );
+      </div>) : (<></>);
   }
 }
