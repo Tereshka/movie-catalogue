@@ -18,11 +18,6 @@ const authReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
     case FETCH_SUCCESS_AUTH:
-      console.log(payload);
-      cookies.set('session_id', payload.session_id, {
-        path: '/',
-        maxAge: 2592000, // 30 days
-      });
       return {
         ...state,
         user: payload.user,
@@ -31,7 +26,6 @@ const authReducer = (state = initialState, action) => {
       };
 
     case LOGOUT:
-      cookies.remove('session_id');
       return {
         ...state,
         user: null,
