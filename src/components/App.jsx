@@ -8,8 +8,7 @@ import {MovieContextConsumer} from './Movies/movieContext';
 
 import { HashRouter, Route } from 'react-router-dom';
 
-import CallApi from '../api/api.js';
-import { updateAuth, logout, toggleLoginModal } from '../redux/auth/authActions';
+import { updateAuth, logout, toggleLoginModal, fetchAuth } from '../redux/auth/authActions';
 import { connect } from 'react-redux';
 
 
@@ -18,13 +17,10 @@ export const AppContext = React.createContext();
 class App extends React.Component {
 
   componentDidMount() {
-    const { sessionId, updateAuth, toggleLoginModal } = this.props;
+    const { sessionId, toggleLoginModal, fetchAuth } = this.props;
 
     if (sessionId) {
-      CallApi.get('/account', {params: {session_id: sessionId}})
-        .then(user => {
-          updateAuth({user, sessionId});
-        });
+      fetchAuth(sessionId);
     } else {
       toggleLoginModal();
     }
@@ -77,6 +73,7 @@ const mapDispatchToProps =  {
   logout,
   updateAuth,
   toggleLoginModal,
+  fetchAuth,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

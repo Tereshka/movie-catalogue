@@ -1,19 +1,20 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+// addition for redux debug
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import rootReducer from './rootReducer';
 
-// addition for redux debug
-const composeEnhancers = composeWithDevTools({});
-
-const logger = store => next => action => {
-  console.log(action.type);
-  return next(action);
-}
+// const thunk = ({ dispatch, getState }) => next => action => {
+//   if (typeof action === "function") {
+//     return action(dispatch, getState);
+//   }
+//   return next(action);
+// };
 
 const store = createStore(
   rootReducer,
-  composeEnhancers(
-    applyMiddleware(logger)
+  composeWithDevTools(
+    applyMiddleware(thunk)
   )
 );
 export default store;

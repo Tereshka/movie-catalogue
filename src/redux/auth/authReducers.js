@@ -1,5 +1,5 @@
 import {
-  UPDATE_AUTH,
+  FETCH_SUCCESS_AUTH,
   LOGOUT,
   TOGGLE_LOGIN_MODAL,
 } from './authTypes';
@@ -17,15 +17,16 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
-    case UPDATE_AUTH:
-      cookies.set('session_id', payload.sessionId, {
+    case FETCH_SUCCESS_AUTH:
+      console.log(payload);
+      cookies.set('session_id', payload.session_id, {
         path: '/',
         maxAge: 2592000, // 30 days
       });
       return {
         ...state,
         user: payload.user,
-        sessionId: payload.sessionId,
+        sessionId: payload.session_id,
         isAuth: true,
       };
 

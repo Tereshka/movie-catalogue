@@ -91,7 +91,7 @@ class LoginForm extends React.Component {
 
       const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
 
-      this.props.updateAuth({user, sessionId: session.session_id});
+      this.props.updateAuth({user, session_id: session.session_id});
       this.setState({submitting: false});
       this.props.toggleLoginModal();
     } catch (error) {
