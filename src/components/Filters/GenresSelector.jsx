@@ -1,7 +1,16 @@
 import React from "react";
+import { withMovie } from "../../hoc/withMovie";
 
-export default function GenreSelector(props) {
-  const { genres, genresSelected, onChangeCheckbox } = props;
+function GenreSelector(props) {
+  const { genres, genresSelected } = props.movie;
+  const { setSelectedGenres, fetchMovies } = props.movieActions;
+
+  const onChangeCheckbox = event => {
+    const {checked, value} = event.target;
+    setSelectedGenres({checked, value});
+    fetchMovies();
+  };
+  
   return (
     <div>
       <h4>Select genres</h4>
@@ -26,4 +35,6 @@ export default function GenreSelector(props) {
       }
     </div>
   );
-}
+};
+
+export default withMovie(GenreSelector);

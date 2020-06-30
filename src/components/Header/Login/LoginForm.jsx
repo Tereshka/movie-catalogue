@@ -1,6 +1,5 @@
 import React from 'react';
-import AppContextHOC from '../../HOC/AppContextHOC';
-import CallApi from '../../../api/api';
+import { withAuth } from '../../../hoc/withAuth';
 
 class LoginForm extends React.Component {
 
@@ -26,29 +25,36 @@ class LoginForm extends React.Component {
   }
 
   handleBlur = (event) => {
-    const errors = this.validateFields(event.target.name);
-    if (Object.keys(errors).length > 0) {
+    const {name} = event.target;
+    const errors = this.validateFields();
+    const error = errors[name];
+
+    if (error) {
       this.setState(prevState => ({
         errors: {
           ...prevState.errors,
-          ...errors
+          [name]: error,
         }
       }));
     }
+    this.props.authActions.clearLoginErrors();
   }
   
-  validateFields = (field) => {
+  validateFields = () => {
     const errors = {};
 
-    if ((field === 'username' || field === undefined) && this.state.username === '') {
+    if (this.state.username === '') {
       errors.username = 'Username is required';
     }
-    if ((field === 'password' || field === undefined) && this.state.password === '') {
+    if (this.state.password === '') {
       errors.password = 'Password is required';
     }
+
+    if (this.state.password.length < 5) {
+      errors.password = 'Your password it too small';
+    }
     // Unnecessary field
-    // if ((field === 'repeatPassword' || field === undefined)
-    //   && (this.state.repeatPassword === '' || this.state.repeatPassword !== this.state.password)) {
+    // if (this.state.repeatPassword !== this.state.password) {
     //   errors.repeatPassword = 'Passwords should be equal';
     // }
 
@@ -71,39 +77,24 @@ class LoginForm extends React.Component {
   }
 
   // Send requests in async style
-  sendPromisesAsync = async () => {
+  sendPromisesAsync = () => {
+    const { username, password } = this.state;
     this.setState({submitting: true});
-    try {
-      const token = await CallApi.get('/authentication/token/new');
-      const tokenWithLogin = await CallApi.post('/authentication/token/validate_with_login', {
-        body: {
-          username: this.state.username,
-          password: this.state.password,
-          request_token: token.request_token,
+    
+    this.props.authActions.login({username, password})
+      .then(() => {
+        if (this.props.auth.errors) {
+          this.setState({
+            submitting: false,
+            errors: {
+              base: this.props.auth.errors.base
+            }
+          });
+        } else {
+          this.setState({submitting: false});
+          this.props.authActions.toggleLoginModal();
         }
-      });
-
-      const session = await CallApi.post('/authentication/session/new', {
-        body: {
-          request_token: tokenWithLogin.request_token,
-        }
-      });
-
-      const user = await CallApi.get('/account', { params: {session_id: session.session_id}});
-
-      this.props.updateAuth({user, session_id: session.session_id});
-      this.setState({submitting: false});
-      this.props.toggleLoginModal();
-    } catch (error) {
-      // error.json().then(error => console.log(error));
-
-      this.setState({
-        submitting: false,
-        errors: {
-          base: error.status_message
-        }
-      })
-    }
+    });
   }
 
   render() {
@@ -167,4 +158,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default AppContextHOC(LoginForm);
+export default withAuth(LoginForm);

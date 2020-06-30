@@ -1,23 +1,18 @@
-import {
-  FETCH_SUCCESS_AUTH,
-  LOGOUT,
-  TOGGLE_LOGIN_MODAL,
-} from './authTypes';
-import Cookie from 'universal-cookie';
-
-const cookies = new Cookie();
+import * as types from './authTypes';
+import { cookies } from '../../utils/cookies';
 
 const initialState = {
   user: null,
   sessionId: cookies.get('session_id'),
   isAuth: false,
   showLoginModal: false,
+  errors: null,
 };
 
 const authReducer = (state = initialState, action) => {
   const {type, payload} = action;
   switch (type) {
-    case FETCH_SUCCESS_AUTH:
+    case types.FETCH_AUTH_SUCCESS:
       return {
         ...state,
         user: payload.user,
@@ -25,7 +20,7 @@ const authReducer = (state = initialState, action) => {
         isAuth: true,
       };
 
-    case LOGOUT:
+    case types.REQUEST_LOGOUT_SUCCESS:
       return {
         ...state,
         user: null,
@@ -33,10 +28,24 @@ const authReducer = (state = initialState, action) => {
         isAuth: false,
       };
 
-    case TOGGLE_LOGIN_MODAL:
+    case types.TOGGLE_LOGIN_MODAL:
       return {
         ...state,
         showLoginModal: !state.showLoginModal,
+      };
+
+    case types.REQUEST_LOGIN_ERROR: 
+      return {
+        ...state,
+        errors: {
+          base: payload.status_message,
+        },
+      };
+
+    case types.CLEAR_LOGIN_ERRORS:
+      return {
+        ...state,
+        errors: null,
       };
 
     default:

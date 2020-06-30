@@ -1,10 +1,30 @@
 import React from 'react';
+import { withMovie } from '../../hoc/withMovie';
 
-export default function MovieTabs(props) {
+function MovieTabs(props) {
+  const sortList = [
+    {
+      title: 'Popularity desc',
+      sortBy: 'popularity.desc',
+    },
+    {
+      title: 'Revenue desc',
+      sortBy: 'revenue.desc',
+    },
+    {
+      title: 'Release date desc',
+      sortBy: 'release_date.desc',
+    }
+  ];
+  const { sortBy } = props.movie;
+  const { setSortBy, fetchMovies } = props.movieActions;
 
-  const { sortList, onChangeSortBy, sortBy } = props;
+  const onChangeSortBy = value => {
+    setSortBy(value);
+    fetchMovies();
+  }
 
-  const getClassName = (value) => {
+  const getClassName = value => {
     return `nav-link ${sortBy === value ? 'active' : ''}`;
   }
 
@@ -26,4 +46,6 @@ export default function MovieTabs(props) {
       }
     </ul>
   );
-}
+};
+
+export default withMovie(MovieTabs);

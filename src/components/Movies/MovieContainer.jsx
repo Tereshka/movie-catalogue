@@ -1,8 +1,8 @@
-import React from "react";
-import MovieItem from './MovieItem';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { withMovie } from '../../hoc/withMovie';
+import MovieCard from './MovieCard';
 
-export default function MovieContainer(props) {
+function MovieContainer(props) {
   const { movies } = props;
   return (
     <div className="row">
@@ -10,7 +10,7 @@ export default function MovieContainer(props) {
         movies.map(movie => {
           return (
             <div key={movie.id} className="col-12 mb-4 col-sm-6 col-lg-4">
-              <MovieItem movie={movie} />
+              <MovieCard movie={movie} />
             </div>
           )
         })
@@ -19,10 +19,4 @@ export default function MovieContainer(props) {
   );
 }
 
-MovieContainer.defaultProps = {
-  movies: [],
-};
-
-MovieContainer.propTypes = {
-  movies: PropTypes.array.isRequired,
-};
+export default withMovie(MovieContainer);

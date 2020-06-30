@@ -1,11 +1,18 @@
 import React from "react";
 import PaginationItem from './PaginationItem';
+import { withMovie } from "../../hoc/withMovie";
 
-export default function Pagination(props) {
+function Pagination(props) {
+  let { activePage, totalPages } = props.movie;
+  let { setActivePage, fetchMovies } = props.movieActions;
   let items = [];
-  let { activePage, totalPages, onClickPage } = props;
   let minPage = Math.max(activePage - 2, 1);
   let maxPage = Math.min(activePage + 2, totalPages);
+
+  const onClickPage = (page) => {
+    setActivePage(page);
+    fetchMovies(page);
+  }
 
   for (let page = minPage; page <= maxPage; page++) {
     items.push(
@@ -42,4 +49,6 @@ export default function Pagination(props) {
       </ul>
     </nav>
   );
-}
+};
+
+export default withMovie(Pagination);

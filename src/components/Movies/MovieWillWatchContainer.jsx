@@ -1,15 +1,18 @@
-import React from "react";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { withMovie } from '../../hoc/withMovie';
 
-export default function MovieWillWatchContainer(props) {
-  const { movies } = props;
+function MovieWillWatchContainer(props) {
+  const { moviesWillWatch } = props.movie;
   return (
     <div>
-      <h4>Will watch {movies.length} movies</h4>
+      <h4>Will watch {moviesWillWatch.length} movies</h4>
       <ul className="list-group">
-        {
-          movies.map((movie, index) => {
+        { moviesWillWatch.map((movie, index) => {
             return (
-              <li key={index} className="list-group-item">{movie.title}</li>
+              <li key={index} className="list-group-item">
+                <Link to={`/movie/${movie.id}/detail`}>{movie.title}</Link>
+              </li>
             )
           })
         }
@@ -18,6 +21,4 @@ export default function MovieWillWatchContainer(props) {
   );
 }
 
-MovieWillWatchContainer.defaultProps = {
-  movies: [],
-};
+export default withMovie(MovieWillWatchContainer);

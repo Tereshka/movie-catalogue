@@ -1,8 +1,8 @@
 import React from 'react';
-import AppContextHOC from '../HOC/AppContextHOC';
+import { Link } from 'react-router-dom';
+import { withAuth } from '../../hoc/withAuth';
+import { withMovie } from '../../hoc/withMovie';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import CallApi from '../../api/api';
-
 
 class UserMenu extends React.Component {
   state = {
@@ -18,13 +18,13 @@ class UserMenu extends React.Component {
   }
 
   handleLogOut = () => {
-    CallApi.delete('/authentication/session', {body: {session_id: this.props.sessionId}})
-      .then( () => this.props.logout());
+    this.props.authActions.userLogout(this.props.auth.sessionId);
+    this.props.movieActions.clearAllUserData();
   }
 
   render() {
     const {dropdownOpen} = this.state;
-    const {user} = this.props;
+    const {auth: { user }} = this.props;
     return (
       <Dropdown isOpen={dropdownOpen} toggle={this.toggle}>
         <DropdownToggle
@@ -45,10 +45,16 @@ class UserMenu extends React.Component {
           <DropdownItem onClick={this.handleLogOut}>
             Logout
           </DropdownItem>
+          <DropdownItem onClick={this.toggle}>
+            <Link to={'/favorite'}>My favorite movies</Link>
+          </DropdownItem>
+          <DropdownItem onClick={this.toggle}>
+            <Link to={'/willwatch'}>My will watch list</Link>
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
     );
   }
 }
 
-export default AppContextHOC(UserMenu);
+export default withAuth(withMovie(UserMenu));
