@@ -1,8 +1,7 @@
-## Master class. React.js + Redux application: Movie catalogue
-  LiveDemo: https://tereshka.github.io/reactwarriors-master-class
+## Movie catalogue: React.js + Redux [Live Demo](https://tereshka.github.io/movie-catalogue)
 
 ## Main purpose:
-Create a movie catalogue using `themoviedb.org` api
+Create a movie catalogue using `themoviedb.org` api. First steps are in the master class from ReactWarrior
 
 On the main page:
 - load movies sorted by popularity, revenue and release date
@@ -35,7 +34,7 @@ https://image.tmdb.org/t/p/w500${path}
 ```
 
 ## Суть проекта:
-Используя апи от `themoviedb.org` реализовать каталог фильмов
+Используя апи от `themoviedb.org` реализовать каталог фильмов, первые шаги сделаны по мастер-классу от ReactWarrior
 
 На Главной реализованы:
 - вывод фильмов в сортировке по популярности (по умолчанию), доходу и дате выхода
