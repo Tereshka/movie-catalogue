@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAEA,kBACE,aACF,CAEA,cACE,oBACF,CAEA,YACE,cACF","file":"main.09da8703.chunk.css","sourcesContent":["/* $error: #dc3545; */\n\n.invalid-feedback {\n  display: block; \n}\n\ninput.invalid{\n  border-color: #dc3545;\n}\n\n.icon:hover{\n  cursor: pointer;\n}"]}
