@@ -1,6 +1,6 @@
 {
-  "name": "reactwarriors-master-class",
-  "homepage": "https://tereshka.github.io/reactwarriors-master-class",
+  "name": "movie-catalogue",
+  "homepage": "https://tereshka.github.io/movie-catalogue",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
