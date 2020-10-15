@@ -11,20 +11,20 @@ On the main page:
 - on title click you can see more movie details
 
 On the movie page you can see:
-- a poster, description and main information about the movie
-- a tab with related videos
-- a tab with actors
+- a poster, a description and main information about the movie
+- a tab with related videos/trailers
+- a tab with movie cast
 
-In user menu there are:
-- log out option
-- link to favorite movies
-- link to will watch list
+There are menu items on clicking the avatar:
+- log out
+- open your favorite movies page
+- open will-watch movies page
 
-There is a login modal on the first application load. If you have a `themoviedb.org` account, you can load see your favorite and will watch lists. There will be like and bookmarks icons on the movie cardsa after authorization.
+There is a login modal on the first application load. If you have a `themoviedb.org` account, you can sign in and see your favorite and will-watch movies. There will be 'like' and 'bookmarks' icons on the movie cards after authorization.
 
 Parameters in .env file:
 ```
-REACT_APP_API_KEY=your_key
+REACT_APP_API_KEY=your_themoviedb_key
 REACT_APP_API_URL=https://api.themoviedb.org/3/
 ```
 
