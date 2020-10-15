@@ -7,7 +7,9 @@ function MovieVideo(props) {
   const { currentMovie, currentMovieVideos, isLoading } = props.movie;
 
   useEffect(() => {
-    props.movieActions.fetchMovieVideosById(currentMovie.id);
+    if (currentMovieVideos.length === 0) {
+      props.movieActions.fetchMovieVideosById(currentMovie.id);
+    }
   }, []);
 
   if (isLoading) {

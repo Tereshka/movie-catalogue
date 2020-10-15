@@ -9,7 +9,9 @@ function MovieCredit(props) {
   const { currentMovie, currentMovieActors, isLoading } = props.movie;
 
   useEffect(() => {
-    props.movieActions.fetchMovieActorsById(currentMovie.id);
+    if (currentMovieActors.length === 0) {
+      props.movieActions.fetchMovieActorsById(currentMovie.id);
+    }
   }, []);
 
   const getPosterSrc = value => {
